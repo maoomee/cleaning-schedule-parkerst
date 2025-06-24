@@ -51,31 +51,60 @@
   </div>
 
   <script>
-    const people = ["Mousami", "Misbah", "Lisa", "Zemen", "Pratikshya", "Janavi"];
-    const duties = "Trash / recycling / counters / stove / floor";
-    const startDate = new Date("2024-06-17");
+  const duties = "Trash / recycling / counters / stove / floor";
+  const defaultPeople = ["Mousami", "Misbah", "Lisa", "Zemen", "Pratikshya", "Janavi"];
+  const startDate = new Date("2024-06-17");
 
-    function getCurrentIndex() {
-      const now = new Date();
-      const diffWeeks = Math.floor((now - startDate) / (7 * 24 * 60 * 60 * 1000));
-      return diffWeeks % people.length;
+  function getPeople() {
+    const saved = localStorage.getItem("cleaningPeople");
+    return saved ? JSON.parse(saved) : defaultPeople;
+  }
+
+  function saveRoommates() {
+    const input = document.getElementById("roommateInput").value;
+    const updated = input.split(",").map(name => name.trim()).filter(Boolean);
+    if (updated.length > 0) {
+      localStorage.setItem("cleaningPeople", JSON.stringify(updated));
+      alert("Roommate list updated!");
+      displaySchedule(); // refresh display
+    } else {
+      alert("Please enter at least one name.");
     }
+  }
 
-    function displaySchedule() {
-      const index = getCurrentIndex();
-      const nextIndex = (index + 1) % people.length;
-
-      document.getElementById("date").innerText = `Today: ${new Date().toDateString()}`;
-      document.getElementById("currentPerson").innerText = `This Week: ${people[index]}`;
-      document.getElementById("nextPerson").innerText = people[nextIndex];
-      document.getElementById("duties").innerText = duties;
-    }
-
-    function markDone() {
-      alert("Nice work! 🧼 Next person will take over next week.");
-    }
-
+  function skipWeek() {
+    const skippedWeeks = parseInt(localStorage.getItem("skippedWeeks") || "0") + 1;
+    localStorage.setItem("skippedWeeks", skippedWeeks.toString());
     displaySchedule();
-  </script>
+  }
+
+  function getCurrentIndex() {
+    const now = new Date();
+    const skippedWeeks = parseInt(localStorage.getItem("skippedWeeks") || "0");
+    const diffWeeks = Math.floor((now - startDate) / (7 * 24 * 60 * 60 * 1000)) + skippedWeeks;
+    const people = getPeople();
+    return diffWeeks % people.length;
+  }
+
+  function displaySchedule() {
+    const people = getPeople();
+    const index = getCurrentIndex();
+    const nextIndex = (index + 1) % people.length;
+
+    document.getElementById("date").innerText = `Today: ${new Date().toDateString()}`;
+    document.getElementById("currentPerson").innerText = `This Week: ${people[index]}`;
+    document.getElementById("nextPerson").innerText = people[nextIndex];
+    document.getElementById("duties").innerText = duties;
+    document.getElementById("roommateInput").value = people.join(", ");
+  }
+
+  function markDone() {
+    alert("Nice work! 🧼 Next person will take over next week.");
+  }
+
+  displaySchedule();
+</script>
+
+  
 </body>
 </html>
