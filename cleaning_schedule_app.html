@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weekly Cleaning Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f9f9f9;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      max-width: 400px;
+      margin: auto;
+    }
+    h1 { color: #E63946; }
+    .name { font-size: 1.5rem; font-weight: bold; color: #1D3557; }
+    .task { margin: 1rem 0; font-size: 1.1rem; }
+    .next { color: #457B9D; font-weight: bold; margin-top: 1rem; }
+    button {
+      background-color: #457B9D;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1D3557;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Weekly Cleaning</h1>
+    <p id="date"></p>
+    <p class="name" id="currentPerson"></p>
+    <p class="task">Duties: <span id="duties"></span></p>
+    <p class="next">Next up: <span id="nextPerson"></span></p>
+    <button onclick="markDone()">Mark as Done ✅</button>
+    <p style="margin-top: 1rem; color: #555; font-size: 0.9rem;">Trash out every Tuesday evening!</p>
+  </div>
+
+  <script>
+    const people = ["Mousami", "Misbah", "Lisa", "Zemen", "Pratikshya", "Janavi"];
+    const duties = "Trash / recycling / counters / stove / floor";
+    const startDate = new Date("2024-06-17");
+
+    function getCurrentIndex() {
+      const now = new Date();
+      const diffWeeks = Math.floor((now - startDate) / (7 * 24 * 60 * 60 * 1000));
+      return diffWeeks % people.length;
+    }
+
+    function displaySchedule() {
+      const index = getCurrentIndex();
+      const nextIndex = (index + 1) % people.length;
+
+      document.getElementById("date").innerText = `Today: ${new Date().toDateString()}`;
+      document.getElementById("currentPerson").innerText = `This Week: ${people[index]}`;
+      document.getElementById("nextPerson").innerText = people[nextIndex];
+      document.getElementById("duties").innerText = duties;
+    }
+
+    function markDone() {
+      alert("Nice work! 🧼 Next person will take over next week.");
+    }
+
+    displaySchedule();
+  </script>
+</body>
+</html>
